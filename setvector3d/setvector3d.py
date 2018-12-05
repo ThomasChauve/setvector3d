@@ -54,12 +54,12 @@ class setvector3d(object):
         :rtype eigvector: np.array
         :note: eigen value w[i] is associate to eigen vector v[:,i] 
         '''
-        a11 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,0],self.vector[:,0]))))
-        a22 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,1],self.vector[:,1]))))
-        a33 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,2],self.vector[:,2]))))
-        a12 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,0],self.vector[:,1]))))
-        a13 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,0],self.vector[:,2]))))
-        a23 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,1],self.vector[:,2]))))
+        a11 = np.float64(np.nanmean(np.float64(np.multiply(self.vector[:,0],self.vector[:,0]))))
+        a22 = np.float64(np.nanmean(np.float64(np.multiply(self.vector[:,1],self.vector[:,1]))))
+        a33 = np.float64(np.nanmean(np.float64(np.multiply(self.vector[:,2],self.vector[:,2]))))
+        a12 = np.float64(np.nanmean(np.float64(np.multiply(self.vector[:,0],self.vector[:,1]))))
+        a13 = np.float64(np.nanmean(np.float64(np.multiply(self.vector[:,0],self.vector[:,2]))))
+        a23 = np.float64(np.nanmean(np.float64(np.multiply(self.vector[:,1],self.vector[:,2]))))
          
         Tensor=np.array([[a11, a12, a13],[a12, a22, a23],[a13, a23, a33]])
         eigvalue,eigvector=np.linalg.eig(Tensor)
