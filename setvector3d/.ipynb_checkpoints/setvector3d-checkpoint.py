@@ -47,28 +47,32 @@ class setvector3d(object):
     def OrientationTensor2nd(self):
         '''
         Compute the normelized second order orientation tensor
+
         :return eigvalue: eigen value w[i]
         :rtype eigvalue: np.array
         :return eigvector: eigen vector v[:,i]
         :rtype eigvector: np.array
         :note: eigen value w[i] is associate to eigen vector v[:,i] 
         '''
-        a11 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,0],self.vector[:,0]))))
-        a22 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,1],self.vector[:,1]))))
-        a33 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,2],self.vector[:,2]))))
-        a12 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,0],self.vector[:,1]))))
-        a13 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,0],self.vector[:,2]))))
-        a23 = np.float32(np.nanmean(np.float128(np.multiply(self.vector[:,1],self.vector[:,2]))))
+        a11 = np.float32(np.nanmean(np.float64(np.multiply(self.vector[:,0],self.vector[:,0]))))
+        a22 = np.float32(np.nanmean(np.float64(np.multiply(self.vector[:,1],self.vector[:,1]))))
+        a33 = np.float32(np.nanmean(np.float64(np.multiply(self.vector[:,2],self.vector[:,2]))))
+        a12 = np.float32(np.nanmean(np.float64(np.multiply(self.vector[:,0],self.vector[:,1]))))
+        a13 = np.float32(np.nanmean(np.float64(np.multiply(self.vector[:,0],self.vector[:,2]))))
+        a23 = np.float32(np.nanmean(np.float64(np.multiply(self.vector[:,1],self.vector[:,2]))))
          
         Tensor=np.array([[a11, a12, a13],[a12, a22, a23],[a13, a23, a33]])
         eigvalue,eigvector=np.linalg.eig(Tensor)
            
-        return eigvalue,eigvector
+        idx = eigvalue.argsort()[::-1]
+           
+        return eigvalue[idx],eigvector[:,idx]
         
         
     def stereoplot(self,contourf=False,bw=0.03,plotOT=True,nbpoints=0,projz=1,angle=np.array([30.,60.]),cm=cm.viridis,cline=15,n_jobs=-1):
         '''
         Plot a stereographic projection of the vector
+
         :param contourf: filled contour plot (default False)
         :type contourf: bool
         :param bw: bandwidth for Kernel density function (default 0.03). bw=0 mean find the best fit between 0.01 and 1
@@ -88,7 +92,6 @@ class setvector3d(object):
         :param n_jobs: number of job in parellel (CPU). Only use when bw=0 (best fit) (default : -1 mean all processor)
         :type n_jobs: int
         '''
-        
        
         if nbpoints==0:
             subset=self
@@ -193,7 +196,7 @@ class setvector3d(object):
                 y_circle = rci[i]*np.cos(i*np.pi/180.)*np.sin(omega)
                 
                 plt.plot(x_circle, y_circle,'k', linewidth=1.5)
-                plt.text(x_circle[200], y_circle[200]+0.04,'$\phi$='+str(angle[i])+'°')
+                plt.text(x_circle[200], y_circle[300]+0.04,'$\phi$='+str(angle[i])+'°')
             # plot Theta line
             plt.plot([0,0],[-1*rco,1*rco],'k', linewidth=1.5)
             plt.text(rco-0.2, 0+0.06,'$\Theta$=0°')
@@ -241,6 +244,7 @@ class setvector3d(object):
     def cart2spher(self):
         '''
         Return vector on spherical coordinate phi theta
+
         :return phi: Angle from the z axis
         :rtype phi: np.array
         :return theta: Angle within the xOy plane
@@ -254,18 +258,19 @@ class setvector3d(object):
     
     def concatenate(self,v1):
         '''
-        concatenate 2 set of vector3d
+        Concatenate 2 set of vector3d
         '''
         
         return setvector3d(np.concatenate((self.vector,v1.vector)))
     
     def subset(self,nbpoints):
         '''
-        select a random subset of the set of vector 3d
+        Select a random subset of the set of vector 3d
+
         :param nbpoints: number of point
         :type nbpoints: int
-        :return v:
-        rtype v: setvector3d
+        :return v: 
+        :rtype v: setvector3d
         '''
         
         id=[random.randint(0, np.shape(self.vector)[0]-1) for p in range(0, nbpoints)]
