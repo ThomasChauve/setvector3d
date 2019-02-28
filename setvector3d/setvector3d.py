@@ -30,7 +30,6 @@ class setvector3d(object):
         id=np.where(norm_data!=1)
         data = np.float64(data)
         for i in list(range(len(id[0]))):
-            if i==0:
                 #print('Normalising vector length to 1')
                 data[id[0][i],:]=data[id[0][i],:]/norm_data[id[0][i]]
         
@@ -42,8 +41,65 @@ class setvector3d(object):
         Create a new set of vector -v
         '''
         return setvector3d(-self.vector)
+                
+    def plot_vector(self,color,size=55,projz=1,angle=np.array([30.,60.]),cm=cm.viridis):
+        
+        X=self.vector[:,0]
+        Y=self.vector[:,1]
+        Z=self.vector[:,2]
+        
+        # Choose the type of projection
+        if projz==0:
+            LpL=1./(1.+Z)
+            xx=LpL*X
+            yy=LpL*Y
+            rci=np.multiply(1./(1.+np.sin((90-angle)*np.pi/180.)),np.cos((90-angle)*np.pi/180.))
+            rco=1.
+        else:
+            vz1=setvector3d(np.transpose(np.array([X,Y,Z])))
+            phip,thetap=vz1.cart2spher()
+            xx = np.multiply(2*np.sin(phip/2),np.cos(thetap))
+            yy = np.multiply(2*np.sin(phip/2),np.sin(thetap))
+            rci=2.*np.sin(angle/2.*np.pi/180.)
+            rco=2.**0.5
+            
+        plt.scatter(xx, yy, c=color, s=size, cmap=cm)
         
         
+        plt.colorbar(orientation='vertical',aspect=4,shrink=0.5)
+        # Compute the outer circle
+        omega = np.linspace(0, 2*np.pi, 1000)
+        x_circle = rco*np.cos(omega)
+        y_circle = rco*np.sin(omega)
+        plt.plot(x_circle, y_circle,'k', linewidth=3)
+        # compute a 3 circle
+        if np.size(angle)>1:
+            for i in list(range(len(rci))):
+                x_circle = rci[i]*np.cos(omega)
+                y_circle = rci[i]*np.cos(i*np.pi/180.)*np.sin(omega)
+                
+                plt.plot(x_circle, y_circle,'k', linewidth=1.5)
+                plt.text(x_circle[200], y_circle[300]+0.04,'$\phi$='+str(angle[i])+'°')
+            # plot Theta line
+            plt.plot([0,0],[-1*rco,1*rco],'k', linewidth=1.5)
+            plt.text(rco-0.2, 0+0.06,'$\Theta$=0°')
+            plt.text(-rco+0.1, 0-0.06,'$\Theta$=180°')
+            plt.plot([-rco,rco],[0,0],'k', linewidth=1.5)
+            plt.text(-0.25, rco-0.25,'$\Theta$=90°')
+            plt.text(0.01, -rco+0.15,'$\Theta$=270°')
+            plt.plot([-0.7071*rco,0.7071*rco],[-0.7071*rco,0.7071*rco],'k', linewidth=1.5)
+            plt.plot([-0.7071*rco,0.7071*rco],[0.7071*rco,-0.7071*rco],'k', linewidth=1.5)
+          
+            
+        # draw a cross for x and y direction
+        plt.plot([1*rco, 0],[0, 1*rco],'+k',markersize=12)
+        # write axis
+        plt.text(1.05*rco, 0, r'X')
+        plt.text(0, 1.05*rco, r'Y')
+        plt.axis('equal')
+        plt.axis('off')
+            
+            
     def OrientationTensor2nd(self):
         '''
         Compute the normelized second order orientation tensor
