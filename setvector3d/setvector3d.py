@@ -63,7 +63,7 @@ class setvector3d(object):
             rci=2.*np.sin(angle/2.*np.pi/180.)
             rco=2.**0.5
             
-        plt.scatter(xx, yy, c=color, s=size, cmap=cm)
+        plt.scatter(xx, yy, c=color, s=size, addcmap=cm)
         
         
         plt.colorbar(orientation='vertical',aspect=4,shrink=0.5)
