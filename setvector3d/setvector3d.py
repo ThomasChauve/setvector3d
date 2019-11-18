@@ -125,7 +125,7 @@ class setvector3d(object):
         return eigvalue[idx],eigvector[:,idx]
         
         
-    def stereoplot(self,contourf=False,bw=0.03,plotOT=True,nbpoints=0,projz=1,angle=np.array([30.,60.]),cm=cm.viridis,cline=15,n_jobs=-1):
+    def stereoplot(self,contourf=False,bw=0.03,plotOT=True,nbpoints=0,projz=1,angle=np.array([30.,60.]),cm=cm.viridis,cline=15,n_jobs=-1,clim=0):
         '''
         Plot a stereographic projection of the vector
 
@@ -294,6 +294,9 @@ class setvector3d(object):
                     
                 plt.plot(xxv,yyv,'sk',markersize=8)
                 plt.text(xxv+0.04, yyv+0.04,str(round(eigvalue[i],2)))
+                
+        if clim!=0:
+            plt.clim(clim)
         
         return
     
