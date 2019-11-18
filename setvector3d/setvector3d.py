@@ -239,7 +239,7 @@ class setvector3d(object):
         else:
             plt.scatter(xx, yy, c=np.exp(weights), s=20, edgecolor='',cmap=cm)
         
-        plt.colorbar(orientation='vertical',aspect=4,shrink=0.5)
+        
         # Compute the outer circle
         omega = np.linspace(0, 2*np.pi, 1000)
         x_circle = rco*np.cos(omega)
@@ -297,6 +297,8 @@ class setvector3d(object):
                 
         if clim!=0:
             plt.clim(clim)
+            
+        plt.colorbar(orientation='vertical',aspect=4,shrink=0.5)
         
         return
     
